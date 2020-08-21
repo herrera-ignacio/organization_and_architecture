@@ -17,6 +17,15 @@
     * System Bus Model
     * Enhancements
   * Non Von Neumann
+* [Data Representation](./data-representation)
+  * Bit & Byte
+  * Nibbles
+  * Words
+  * Positional Numbering Systems
+  * Binary system
+  * Signed Integer Representation
+    * Signed Magnitude
+    * One Complement
 
 ## References
 
