@@ -25,7 +25,19 @@
   * Binary system
   * Signed Integer Representation
     * Signed Magnitude
+      * Overflow
     * One Complement
+    * Two Complement
+  * Floating Point Representation
+    * Arithmetic
+    * Errors
+    * IEEE-754 Standad
+  * Character Codes
+    * Binary Coded
+    * EBIDIC
+    * ASCII
+    * Unicode
+  
 
 ## References
 
