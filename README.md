@@ -37,6 +37,10 @@
     * EBIDIC
     * ASCII
     * Unicode
+* [Boolean Algebra & Digital Logic](./logic)
+  * Boolean Algebra
+  * Combinatorial Circuits
+  * Sequential Circuits
   
 
 ## References
