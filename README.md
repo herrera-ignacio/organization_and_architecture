@@ -41,7 +41,7 @@
   * Boolean Algebra
   * Combinatorial Circuits
   * Sequential Circuits
-  
+* [MARIE, a Simple Computer](./marie)
 
 ## References
 
