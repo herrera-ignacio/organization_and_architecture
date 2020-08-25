@@ -6,7 +6,7 @@
 * Registers
 * ALU
 * Bus
-* Clock
+* Clocks
 
 ## CPU Basics and Organization
 
@@ -100,4 +100,28 @@ Each device is allowed to make a request for the bus, if the bus detects any col
 
 ## Clocks
 
+Every computer contains an internal clock that regulates how quickly instructions can be executed. The clock also synchronizes all of the components in the system. The CPU uses this clock to regulate its progress, checking the otherwise unpredictable speed of the digital logic gates.
 
+The CPU requires a fixed number of clock ticks to execute each instruction. Therefore, instruction performance is often measured in __Clock Cycles__, the time between clock ticks, instead of seconds. The __Clock Frequency__ is measured in __MHz__, where 1MHz is equal to 1 million cycles per second, so 1Hz is 1 cycle per second. The Clock Cycle time (or Clock Period) is simple the reciprocal of the clock frequency. For example, an 800Mhz machine has a clock cycle time of 1/800.000.000 of 1.25ns. If a machine has a 2ns cycle time, then it is a 500Mhz machine.
+
+__Most machines are synchronous__, there is a master clock signal, which ticks at regular intervals. Registers must wait for the clock to tick before new data can be loaded.
+
+### Minimum Clock Cycle
+
+It seems reasonable to assume that if we speed up the clock, the machine will run faster. However __there are limits on how short we can make the clock cycles__. When the clock ticks and new data is loaded into the registers, the register outputs are likely to change. These changed output values must propage through all the circuits in the machine until they react the input of the next set of registers. The clock cycle must be long enough to allow these changes to reach the next set of registers. __If the clock cycle is too short__, we could end up with some values not reaching the registers, resulting in an inconsistent state in our machine. Therefore, the __minimum clock cycle time must be at least as great as the maximum propagation delay of the circuit__, from each set of register outputs to register inputs.
+
+### Architecture
+
+The architecture of a maxchine has a large effect on its performance. Two machines with the same clock speed do not necessarily execute instructions in the same number of cycles.
+
+```
+CPU Time = seconds / program = instructions/program * average cycles/instructions * seconds/cycle
+```
+
+### System & Bus Clock
+
+Generally, the term clock refers to the _System Clock_ or master clock that regulates the CPU and other components. However, certain buses also have their own clocks. _Bus Clocks_ are usually slower than CPU clocks, causing bottleneck problems.
+
+When we connect all of the components together in a serial fashion, where one component must complete its task before another can function properly, it is important to be aware of these performance bounds so we are able to synchronize the components properly.
+
+## I/O Subsystem
