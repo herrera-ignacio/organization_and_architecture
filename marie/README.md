@@ -125,3 +125,21 @@ Generally, the term clock refers to the _System Clock_ or master clock that regu
 When we connect all of the components together in a serial fashion, where one component must complete its task before another can function properly, it is important to be aware of these performance bounds so we are able to synchronize the components properly.
 
 ## I/O Subsystem
+
+I/O devices allow us to communicate with the computer system. I/O is the transfer of data between primary memory and various I/O peripherals.
+
+These devices are not connected directly to the CPU. Instead, there is an _interface_ that handles the data transfers. This interface converts the system bus singlas to an from a format that is acceptable to the given device. The CPU communicates to these external devices via input/output registers.
+
+The exchange of data is performed in two ways:
+
+### Memory-Mapped I/O
+
+Registers in the interface appear in the computer's memory map and there is no real difference between accessing memory and accessing an I/O device.
+
+Clearly, this is advantageous from the perspective of speed, but it uses up memoy space in the system.
+
+### Instruction-Based I/O
+
+CPU has specialized instructions that perform the input and output. Although this does not use memory space, it requires specific I/O instructions, which implies it can be used only be CPUs that can execute this specific instructions.
+
+Interrupts play a very important part in I/O, because they are an efficient way to notify the CPU that input or output is available for use.

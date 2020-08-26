@@ -43,6 +43,7 @@
   * Sequential Circuits
 * [MARIE, a Simple Computer](./marie)
 
+
 ## References
 
 * [Von Neumann Computer Model Lecture](http://www.c-jump.com/CIS77/CPU/VonNeumann/lecture.html)
