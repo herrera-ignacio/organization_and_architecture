@@ -186,3 +186,27 @@ It is also possible that a computer might be __word-addressable__, which means e
 ### Memory Interleaving
 
 Memory interleaving splits memory across multiple memory modules (or banks). With high-order interleaving, the more intuitive organization, the high-order bits of the address are used to select the bank, and distributes the addresses so that each module contains consecutive addresses.
+
+## Interrupts
+
+Interrupts are vents that alter the normal flow of execution in the system, that can be triggered for a variety of reasons:
+
+* I/O requests.
+* Arithmetic errors, underflow or overflow.
+* Hardware malfunction.
+* User-defined break points.
+* Page faults.
+* Invalid instructions.
+* Miscellaneous.
+
+The actions performed for each of these types of interrupts (__interrupt handling__) are very different.
+
+An interrupt can:
+
+* Be initiated by the user or the system.
+* Be __maskable__ (disabled or ignored).
+* Be __nonmaskable__ (a high priority interrupt that must be acknowledged).
+* Occur within or between instructions.
+* Be synchronous (occurs at the same place every time a program is executed).
+* Be asynchronous (occurs unexpectedly).
+* Result in program terminating or continuing execution once the interrupt is handled.
