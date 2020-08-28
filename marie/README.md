@@ -143,3 +143,46 @@ Clearly, this is advantageous from the perspective of speed, but it uses up memo
 CPU has specialized instructions that perform the input and output. Although this does not use memory space, it requires specific I/O instructions, which implies it can be used only be CPUs that can execute this specific instructions.
 
 Interrupts play a very important part in I/O, because they are an efficient way to notify the CPU that input or output is available for use.
+
+## Memory Organization and Addressing
+
+You can envision memory as a matrix of bits. Each row, implemented by a register, has a length typically equivalent to the word size of the machine. Each register (more commanly referred to as a _memory location_) has an unique address. Memory addresses usually start at zero and progress upward.
+
+A memory address is typically stored in a single machine word.
+
+Memory is built from _Random Access Memory (RAM) chips_.
+
+Memory is often referred to using the __L x W notation__ (length x width). For example, 4M x 16 means the memory is 4M long (2^2 X 2^20 = 2^22 words) and it is 16 bits wide (word size). To address this memory (assuming word addressing), we need to be able to uniquely identify 2^12 different items (different addresses). So we need to count from 0 to 2^12 - 1 in binary. In general, if a computer has 2^n addressable units of memory, it will require N bits to uniquely address each type.  
+
+### Words
+
+Each building (word) has multiple apartments (bytes), and each apartment has its own address. All of the apartments are numbered sequentially (addressed), from 0 to the total number of apartments in the complex. The buildings themselves serve to group the apartments.
+
+__Words are the basic unit of size used in various instructions__. For example, you may read a word from or write a word to memory, even on a byte-addressable machine.
+
+### Byte Adressable Architecture
+
+An __address is almost always represented by an unsigned integer__. Normally, memory is __byte-addressable__, which means that __each individual byte has an unique address__.
+
+Some machines may have a word size that is larger than a single byte. For example, a computer might handle 32-bit word, but still employ a byte-addressable architecture. In this situation, when a word uses multiple bytes, the byte with the lowest address determines the address of the entire word.
+
+#### Issue of alignment
+
+In an architecture is _byte-addressable_, and the instruction set architecture word is larger than 1 byte, the issue of _alignment_ must be addressable.
+
+For example, if we wish to read a 32-bit word on a byte-addressable machine, we must make sure that:
+
+1. The word was stored on a natural alignment boundary.
+2. Access starts on that boundary.
+
+This is accomplished, in the case of 32-bit words, by requiring the address to be a multiple of 4.
+
+Some architectures allow unaligned accesses, where the desired address does not have to start on a natural boundary.
+
+### Word Addressable Architecture
+
+It is also possible that a computer might be __word-addressable__, which means each word has its own address, but most current machines are byte-addressable.
+
+### Memory Interleaving
+
+Memory interleaving splits memory across multiple memory modules (or banks). With high-order interleaving, the more intuitive organization, the high-order bits of the address are used to select the bank, and distributes the addresses so that each module contains consecutive addresses.
