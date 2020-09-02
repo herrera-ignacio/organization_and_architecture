@@ -6,7 +6,26 @@
 * Registers
 * ALU
 * Bus
+  * Sync/Async
+  * Bus Abitration
+    * Daisy Chain
+    * Centralized Parallel
+    * Distributed using Self-Selection
+    * Distributed using Collision Detection
 * Clocks
+* I/O
+  * Memory-Mapped
+  * Instruction-Based
+* Memory
+  * Organization
+  * Addressing
+    * Byte-Addressable Architecture
+    * Word-Addressable Architecture
+* Interrupts
+* ISA: Instruction Set Architecture
+* Instruction Processing
+  * Fetch-Decode-Execute Cycle
+  * Interrupts and I/O
 
 ## CPU Basics and Organization
 
@@ -210,3 +229,112 @@ An interrupt can:
 * Be synchronous (occurs at the same place every time a program is executed).
 * Be asynchronous (occurs unexpectedly).
 * Result in program terminating or continuing execution once the interrupt is handled.
+
+## ISA: Instruction Set Architecture
+
+ISA specifies the instructions that the computer can perform and the format for each instruction. It is essentially an interface between the software and the hardware.
+
+Most ISAs consist of instructions for processing data, moving data, and controlling the execution sequence of the program.
+
+### MARIE specifics
+
+`Load` instruction allows us to move data from memory into the CPU (via the MBR and the AC). All data from memory must move first into the MBR and then into either the AC or the ALU, there are no  other options in this architecture.
+
+Notice that the `Load` instruction does not have to name thew AC as the final destination, this register is implicit in the instruction.
+
+### Assembly Language Instructions
+
+Instructions consist of an __4 bit opcode + 12 bit address__ combination. Most people would rather use the instdruction name, or __mnemonic__, for the instruction, instead of the binary value.
+
+Binary instructions are called __machine instructions__, whereas the corresponding mnemonic instructions are what we refer to as __assembly language instructions__.
+
+There is a one-to-one correspondence between assembly language nad machine instructions.
+
+When we write in an assembly language program, we need an assembler to convert it to its binary equivalent.
+
+### Assemblers
+
+An assembler's job is to convert assembly language (using mnemonics) into machine language (binary instructions). The assembler reads a _source file_ (assembly program) and produces an _object file_ (machine code).
+
+Substituting simple alphanumeric names for the opcodes makes programming much easier. We can also substitute _labels_ (simple names) to identify or name particular memory addresses, making the task of writing assembly programs ever simpler. When the address field of an instruction is a label instead of an actual physical address, the assembler still must translate it into a real, physical address in main memory.
+
+#### Labels & Symbol Table
+
+Labels are nice for programmers. However, they make more work for the the assmebler. It must make two phases through a program to do the translation, reading the program twice, from top to bottom each time, because it does not know where the data portion of the instruction is located if it is given only a label.
+
+On the first pass, the assembler builds a set of correspondences called a _symbol table_. It also begins to translate the instructions.
+
+On the second pass, the assembler uses the symbol table to fill in the addresses and create the corresponding machine language instructions.
+
+#### Assembler Directive
+
+Instruction specifically fort the assembler that is not supposed to be translated into machine code, for example, to specifiy which base is to be used to interpret the value (binary, hex, decimal).
+
+#### Comment Delimiter
+
+Special characters that tell the assembler (or compiler) to ignore all text following the special character.
+
+#### Why Assembling Language?
+
+Compiler takes high-level language (such as C++) and converts it into assembly language. Compilers, in most cases, do a great job. Ocasionally, however, programmers must bypass some of the restrictions found in high-level languages and manipulate the assembly code themselves. By doing this, programmers can make the program more efficient in terms of time (and space).
+
+Some situations favor programs written entirely in assemblyl anguage, for example, if the overall size of the program or response time is critical. This is because compilers tend to obscure information about the cost of various operations and programmers often find it difficult to judge exactly how their compiled programs will perform.
+
+Assembly language puts the programmer closer to the architecture, and thus, in firmer control.
+
+A perfect example, in terms of both response performance and space-critical design, is found in _embedded systems_.
+
+## Instruction Processing
+
+All computers follow a basic machine cycle:
+
+1. Fetch
+2. Decode
+3. Execute
+
+### Fetch-Decode-Execution Cycle
+
+Represents the steps that a computer follows to run a program.
+
+Note that computers today, even with large instructions sets, long instructions, and huge memories, can execute millions of these fetch-decode-execute cycles in the blink of an eye.
+
+#### Overview
+
+1. CPU fetches an instruction, transfering it from main memory to the instruction register.
+2. CPU decodes instruction, determining the opcode and fetching any data necessary to carry out the instruction.
+3. CPU executes instruction, perfoming the operation(s) indicated by the instruction.
+
+Notice that a large part of this cycle is spent copying data from one location to another.
+
+#### Details
+
+When a program is initially loaded, the adress of the first instruction must be placed in the PC. The steps in this cycle, which take place in specific clock cycles, are listed below:
+
+1. Copy contents of the PC to the MAR: `MAR <- PC`.
+2. Go to main memory and fetch instruction found at the address in MAR, placing this instruction in the IR: `IR <- M[MAR]`.
+3. Increment PC by 1, which now points to the next instruction in the program: `PC <- PC + 1`.
+  * This is because MARIE is word-addressable. If MARIE were byte-addressable, the PC would need to be incremented by 2 to point to the address of the next instruction, because each instruction would require two bytes. On a byte-addressable machine with 32-bit words, the PC would need to be incremented by 4.
+4. Copy rightmost 12 bits of the IR into the MAR: `MAR <- IR[11-0]`.
+5. Decode leftmost four bits to determine the opcode: `IR[15-12]`.
+6. If necessary, use the address in the MAR to go to memory to get data, placing the data in the MBR (and possibly the AC), and then execute the instruction: `MBR <- M[MAR]` and exceute the instruction.
+
+### Interrupts and I/O
+
+Input registers hold data being transferred from an input device into the computer. The output registers hold information ready to be sent to an output device. The timing used by these two registers is very important.
+
+#### Interrupt-Driven I/O
+
+MARIE addresses timing problems by using __Interrupt-Driven I/O__. When the CPU executes an input or output instruction, tthe appropriate I/O device is notified. The CPU then continues with other useful work until the device is ready. At that time, the device sends an interrupt signal to the CPU. The CPU then processes the interrupt, after which it continues with the normal fetch-decode-execute cycle.
+
+1. Signal (interrupt) from the I/O device to the CPU indicating that input or output is complete.
+2. Some means of allowing the CPU to detour from the usual fetch-decode-execute cycle to _recognize_ this interrupt.
+
+The method most computers use to process an interrupt is to __check to see if an interrupt is pending at the beginning of each f-d-e cycle__. If so, the interrupt is processed, executing an interrupt routine that is determined by the type of interrupt that has occurred, after which the machine execution cycle continues. If no interrupt is present, processing continues as normal.
+
+Typically, input/output __device sends an interrupt by using a special register, the status or flag register__. A special bit is set to indicate an interrupt has occured.
+
+After the CPU recognizes an interrupt request, the address of the interrupt service routine is determined, and the routine is executed. The CPU must return to the exact point at which it was running in the original program. Therefore, when the CPU switches to the interrupt service routine, it must save the contents of the PC, the contents of all other registers in the CPU, and any status conditions that exist for the original program, restoring this exact same environment after the interrupt service routine has finished.
+
+For example, as soon as input is entered from the keyboard, this bit is set. CPU checks this bit at the beginning of every machine cycle. When it is set, the CPU processes an interrupt. When it is not set, CPU performs a normal f-d-e cycle, processing instructions in the program it is currently executing.
+
+Other external interrupts, generated by external events (such as power failure), internal interrupts generated by some exception condition in the program (such as division by zero, stack overflow, or protection violations), and software interrupts, regarless of which type of interrupt has been invoked, the interrupt handling process is the same.
