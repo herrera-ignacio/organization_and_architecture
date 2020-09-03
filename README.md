@@ -48,7 +48,8 @@
     * Fetch-Decode-Execute Cycle
     * Interrupts & I/O
   * Hardwired vs Microprogrammed
-  * Real world architecture examples 
+  * Real world architecture examples
+* [ISA in Detail](./isa) 
 
 ## References
 
