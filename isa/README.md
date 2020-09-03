@@ -1,6 +1,7 @@
 # ISA
 
-* Instructions Format
+* Instructions Formats
+* Instruction Types
 * Design Decisions
   * Little vs Big Endian
   * Interal Storage in CPU: Stack vs Registers
@@ -23,6 +24,50 @@ Architectures are differentiated from one another by the number of bits allowed 
   * which instructions can access memory
 * Type and Size of Operands
   * addresses, numbers, or even characters
+
+## Instruction Types
+
+Most computer instructions operate on data, however, there are some that do not. Computer manufacturers regularly group instructions into the following categories:
+
+* Data movement
+* Arithmetic
+* Boolean
+* Bit manipulation (shift and rotate)
+* I/O
+* Transfer of control
+* Special purpose
+
+### Data Movement
+
+Most frequently used instructions. Data is moved from memory into registers, from registers to registers, and from registers to memory. Many machines provide different instruction depending on the source and destination.
+
+Some architectures, such as RISC, limit instructions that can move data to and from memory in an attempt to speed up execution.
+
+### Arithmetic
+
+Include those instructions that use integers and floating point numbers. Many instruction sets provide different arithmetic instructions for different various data sizes, and for various combinations of register and memory accesses in different addressing modes.
+
+### I/O
+
+I/O instructions vary greatly from architecture to architecture. The basic schemes for handling I/O are:
+
+* Programmed I/O
+* Interrupt-driven I/O
+* DMA devices
+
+### Transfer of control
+
+Control instructions include branches, skips, and procedure calls.
+
+Branching can be unconditional or conditional.
+
+Skip instructions are basically branch instructions with implied addresses, because no operand is required.
+
+Procedure calls are special branch instructions that automatically save the return address. Different machines use different methods to save this address. Some store the address at specific location in memory, others store it in a register, while still other push it on a stack.
+
+### Special Purpose
+
+Include those used for string processing, high level language support, protection, flag control, and cache management.
 
 ## Design Decisions
 
@@ -188,3 +233,57 @@ WY+ WZ- X 2+
 * Opcode + 1 Address (usually a memory address)
 * Opcode + 2 Addresses (usually registers, or register and one memory address)
 * Opcode + 3 Addresses (usually registers, or combinations of registers and memory)
+
+## Expanding Opcodes
+
+This represents a compromise between the need for a rich set of opcodes and the desire to have short opcodes, and thus short instructions.
+
+The idea is to make some opcodes short, but have a means to provide longer ones when needed.
+
+When the opcode is short, a lot of bits are left to hold operands. When you don't need any space for operands, all the bits can be used for the opcode, which allows for many unique instructions. In between, there are longer opcodes with fewer operands as well as shorter opcodes with more operands.
+
+This expanding opcode scheme makes the decoding more complex. Instead of simply looking at a bit pattern and deciding which instruction it is, we need to decode the instruction first looking at the most significant bits first.
+
+### Example
+
+Suppose we wish to encode the following instructions:
+
+* 15 instructions with 3 addresses
+* 14 instructions with 2 addresses
+* 31 instructions with 1 addresse
+* 16 instructions with 0 addresses
+
+We can do the following:
+
+```
+// 15 3-address codes
+0000 R1 R2 R3
+...
+1110 R1 R2 R3
+
+// 14 2-address codes
+1111 0000 R1 R2
+...
+1111 1101 R1 R2
+
+// 31 1-address codes
+1111 1110 0000 R1
+1111 1111 1110 R1
+
+// 16 0-addresses code
+1111 1111 1111 0000
+1111 1111 1111 1111
+```
+
+And for decoding:
+
+```
+if (leftmost four bits != 1111) {
+  execute three-addresses instruction
+}
+...
+...
+else {
+  execute zero-address instruction
+}
+```
