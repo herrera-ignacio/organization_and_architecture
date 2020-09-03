@@ -6,6 +6,15 @@
   * Little vs Big Endian
   * Interal Storage in CPU: Stack vs Registers
   * Number of Operands and Instruction Length
+* Addressing Modes
+  * Immediate
+  * Direct
+  * Register
+  * Indirect
+  * Indexed
+  * Based
+  * Stack
+  * Additional Modes
 
 ## Instruction Formats
 
@@ -287,3 +296,58 @@ else {
   execute zero-address instruction
 }
 ```
+
+## Addressing
+
+Bits in an instruction can be interpreted in many ways, providing us with several different _addressing modes_, that allow us to specify where the instruction operands are located.
+
+An addressing mode can specify a constant, a register, or a location in memory.
+
+Certain modes allow shorter addresses adnd some allow us to determine the location of the actual operand, often called the _effective address_ of the operand, dynamically.
+
+
+### Immediate Addressing
+
+Value to be referenced immediately follows the operation code in the instruction. Data to be operated on is part of the instruction.
+
+The bits of the operand field do not specify an address, they specify the actual oeprand the instruction requires.
+
+Immediate addressing is very fast because the value to be loaded is included in the instruction, however, this implies the value to be loaded is fixed at compile time and it is not very flexible.
+
+### Direct Addressing
+
+Value to be referenced is obtained by specifying the memory address directly in the instruction.
+
+Typically quite fast because value is quickly accessible. It is also much more flexible than immediate addressing because value to be loaded may be variable.
+
+### Register Addressing
+
+A register, instead of memory, like in _Direct addressing_, is used to specify the operand.
+
+### Indirect Addressing / Register Indirect Addressing
+
+Bitys in the address field specify a memory address that is to be used as a pointer. The effective address of the operand is found by going to this memory address.
+
+Very powerful addressing mode that provides an exeptional level of flexibility.
+
+In a variation on this scheme, _Register Indirect Addressing_, the operand bits specify a register instead of a memory address.
+
+### Indexed Addressing
+
+Uses an index register (either explicitly or implicitly) is used to store an offset (or displacement), which is added to te operand, resulting in the effective address of the data.
+
+### Based Addressing
+
+A base address register, which holds a base address, where the address field represents a displacement from the base.
+
+This mode and Indexed mode are quite useful for accessing array elements as well as characters in strings.
+
+### Stack Addressing
+
+The operand is assumed to be on the stack.
+
+### Additional Addressing Modes
+
+Many variations on the above schemes exist. The various addressing modes allow us to specify a much larger range of locations than if we were limited to using one or two modes.
+
+As always, there are trade-offs. W sacrifice simplicity in address calculations and limited memory references for flexibility and increased address range.
