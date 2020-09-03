@@ -42,7 +42,13 @@
   * Combinatorial Circuits
   * Sequential Circuits
 * [MARIE, a Simple Computer](./marie)
-
+  * Hardware Basics for Von Neumann Architecture
+  * ISA: Instruction Set Architecture
+  * Instruction Processing
+    * Fetch-Decode-Execute Cycle
+    * Interrupts & I/O
+  * Hardwired vs Microprogrammed
+  * Real world architecture examples 
 
 ## References
 
