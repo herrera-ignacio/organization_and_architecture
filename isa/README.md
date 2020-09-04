@@ -15,6 +15,11 @@
   * Based
   * Stack
   * Additional Modes
+* Instruction Level Pipelining
+  * Resource conflicts
+  * Data dependencies
+  * Conditional branch statements
+* Superscalar design
 
 ## Instruction Formats
 
@@ -351,3 +356,51 @@ The operand is assumed to be on the stack.
 Many variations on the above schemes exist. The various addressing modes allow us to specify a much larger range of locations than if we were limited to using one or two modes.
 
 As always, there are trade-offs. W sacrifice simplicity in address calculations and limited memory references for flexibility and increased address range.
+
+## Instruction Level Pipelining
+
+Conceptually, in fetch-decode-execution cycle, each pulse of the computer's clock is used to control one step in the sequence, but sometimes additional pulses can be used to control smaller details within one step.
+
+Some CPUs break the f-d-e cycle down into smaller steps, where some of these smaller steps can be performed in parallel. This overlapping speeds up execution, and is known as __pipelining__.
+
+We must also assume the architecture provides a means to fetch data and instructions in parallel. This can be done with separate instruction and data paths, however, most memory systems do not allow this. Instead, they provide the operand in cache, which, in most cases, allows the instruction and operand to be fetched simultaneously.
+
+There is a fixed overhead involved in moving data from memory to registers. The amount of control logic for the pipeline also increases in size proportional to the number of stages, thus slowing down total execution. In addition, there are several conditions that result in "pipeline conflicts", which keep us from reaching the goal of executing one instruction per clock cycle:
+
+* Resource conflicts
+* Data dependencies
+* Conditional branch statements
+
+### Resource conflicts
+
+Major concern in instruction-level parallelism. For example, if one instruction is storing a value to memory while another is being fetched fom memory, both need access to memory. Typically this is resolved by allowing the instruction executing to continue.
+
+Certain conflicts can also be resolved by providing two separate pathways, one for data coming from memory and another for instructions coming from memory.
+
+### Data dependencies
+
+Arise when the result of one instruction, not yet available, is to be used as an operand to a following instructions.
+
+There are several ways to handle these types of pipeline conflicts.
+
+Special hardware can be added to detect instructions whose source operands are destinations for instructions further up the pipeline, which can insert a brief delay into the pipeline, allowing enough time to pass to resolve the conflict.
+
+Special hardware can also be used to detect thse conflicts and route data through special paths that exist between various stages of the pipeline.
+
+Some architectures address this problem by letting the compiler resolve the conflict by reordering instructions, resulting in a delay of loading any conflicting data but having no effect on the program logic or output.
+
+### Conditional branch statements
+
+Altering the flow of execution in a program, in terms of pipelining, causes major problems. If instructions are fetched one per clock cycle, several can be fetched and even decoded before a preceding instruction, indicating a branch, is executed. Conditional branching is particularly difficult to deal with.
+
+Many architectures offer __branch prediction__, using logic to make the best guess as to which instructions will be needed next.
+
+Compilers try to resolve branching issues by rearranging the machine code to cause a __delayed branch__. An attempt is made to reorder and insert useful instructions, but if that is not possible, no-op instructions are inserted to keep the pipeline full.
+
+Another approach is given a conditional branch, to start fetches on both paths of the branch and save them until the branch is actually executed, at which time the "true" execution path will be known.
+
+## Superscalar Design
+
+One step beyond pipelining. Superscalar chips have multiple ALUs and issue more than one instruction in each clock cycle. The logic to keep track of hazards become even more complex, more logic is needed to schedule operations than to do them. But even with complex logic, it is hard to schedule parallel operations "on the fly".
+
+The limits of dynamic scheduling have led machine designers to consider very different architecture, explicitly parallel instruction computers (EPIC).
